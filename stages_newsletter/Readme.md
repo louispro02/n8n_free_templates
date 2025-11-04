@@ -5,19 +5,19 @@ Pour cibler un autre domaine → modifiez simplement le **Google Dork** (dans le
 
 ---
 
-## 🚀 **Pas envie de t’embêter avec n8n ? Choisis ton niveau :**
+🛠️ **Instructions de Configuration :**
 
-| Option | Prix | Ce que tu reçois |
-| --- | --- | --- |
-| **Template adapté Corporate Finance (gratuit)** | 0 € | Workflow n8n fonctionnel (mail simple) – **à télécharger directement via le Gumroad du produit principal** |
-| **Template adapté Corporate Finance + beau mail HTML** | **~~9.99€~~ 4,99 €** (promo valide 10 jours) | Newsletter pro, beau format responsive et adapté au dark mode (pour me soutenir 🙂) |
-| **Newsletter live « Stages Corporate Finance »** | 9,99 €/mois (1 sem gratuite) | Offres filtrées chaque matin, zéro config |
-| **Newsletter 100 % sur-mesure** | 39,99 €/mois (1 sem gratuite) | Critères ultra-précis (ville, durée, entreprise…) – je la développe pour toi |
+1. Importez le JSON dans n8n.  
+2. Ajoutez vos identifiants :  
+   - SerpAPI (clé API)  
+   - Google Sheets (OAuth2)  
+   - Microsoft Outlook (OAuth2)  
+3. Modifiez le **Google Dork** si besoin.  
+4. Planifiez à 7 h → testez → ajustez le prompt IA.  
 
-👉 **Achat & liens :**  
-- Template gratuit / premium → via le Gumroad du produit principal ou [ici pour le beau mail](https://cashroutine.gumroad.com/p/50-off-for-the-template-daily-notification-on-latest-job-offers)  
-- Newsletter live → [https://cashroutine.gumroad.com/l/internship-alert](https://cashroutine.gumroad.com/l/internship-alert)  
-- Sur-mesure → contacte-moi sur Telegram ou cashflows.routine@gmail.com
+🔑 **Identifiants & Nœuds requis :**  
+- **Identifiants** : SerpAPI, Google Sheets OAuth2, Microsoft Outlook OAuth2.  
+- **Nœuds** : Schedule Trigger, HTTP Request, Google Sheets, AI Agent (Gemini), Microsoft Outlook.
 
 ---
 
@@ -32,19 +32,14 @@ Pour cibler un autre domaine → modifiez simplement le **Google Dork** (dans le
 
 ---
 
-🛠️ **Instructions de Configuration :**
+## 🚀 **Pas envie de t’embêter avec n8n ? Choisis ton niveau :**
 
-1. Importez le JSON dans n8n.  
-2. Ajoutez vos identifiants :  
-   - SerpAPI (clé API)  
-   - Google Sheets (OAuth2)  
-   - Microsoft Outlook (OAuth2)  
-3. Modifiez le **Google Dork** si besoin.  
-4. Planifiez à 7 h → testez → ajustez le prompt IA.  
-
-🔑 **Identifiants & Nœuds requis :**  
-- **Identifiants** : SerpAPI, Google Sheets OAuth2, Microsoft Outlook OAuth2.  
-- **Nœuds** : Schedule Trigger, HTTP Request, Google Sheets, AI Agent (Gemini), Microsoft Outlook.
+| Option | Prix | Lien & Ce que tu reçois |
+| --- | --- | --- |
+| **Template adapté Corporate Finance (gratuit)** | 0 € | [GitHub (JSON + README)](https://github.com/grunti/n8n_free_templates/tree/main/stages_newsletter) + [Tuto YouTube](https://youtu.be/dMFFVp0DcII)<br>Workflow n8n fonctionnel (mail simple) |
+| **Template adapté Corporate Finance + beau mail HTML** | **~~9.99€~~ 4,99 €** (promo valide 10 jours) | [Acheter ici](https://cashroutine.gumroad.com/p/50-off-for-the-template-daily-notification-on-latest-job-offers)<br>Newsletter pro, beau format responsive et adapté au dark mode (pour me soutenir 🙂) |
+| **Newsletter live « Stages Corporate Finance »** | 9,99 €/mois (1 sem gratuite) | [S’abonner](https://cashroutine.gumroad.com/l/internship-alert?layout=profile)<br>Offres filtrées chaque matin, zéro config |
+| **Newsletter 100 % sur-mesure** | 39,99 €/mois (1 sem gratuite) | [S’abonner](https://cashroutine.gumroad.com/l/internship-alert?option=EZ863YfdUxjzZcbFtp89RQ%3D%3D)<br>Critères ultra-précis (ville, durée, entreprise…) – je la développe pour toi |
 
 ---
 
