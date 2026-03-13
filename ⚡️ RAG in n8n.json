@@ -1,0 +1,955 @@
+{
+  "name": "⚡️ RAG in n8n",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "id": "8cb2d7ca-5faa-4f9f-b0dc-19952a87b2e6",
+      "name": "Extract from PDF",
+      "type": "n8n-nodes-base.extractFromFile",
+      "position": [
+        336,
+        944
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "365b8846-d743-44db-ba11-52a868dd89cb",
+      "name": "Extract from CSV",
+      "type": "n8n-nodes-base.extractFromFile",
+      "position": [
+        336,
+        1136
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.concatenated_text }}",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "file_id",
+                "value": "={{ $('Set File ID1').first().json.file_id}}"
+              },
+              {
+                "name": "title",
+                "value": "={{ $('Create Metadata Title & Description').item.json.output.title }}"
+              },
+              {
+                "name": "description",
+                "value": "={{ $('Create Metadata Title & Description').item.json.output.description }}"
+              }
+            ]
+          }
+        }
+      },
+      "id": "78fcdb31-8b24-4ba2-9e62-f4e43caf54f0",
+      "name": "Default Data Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "position": [
+        1984,
+        1152
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "separator": "###SPLIT###"
+      },
+      "id": "472b0999-4628-4717-9302-1f1dd8bfc15c",
+      "name": "Character Text Splitter",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterCharacterTextSplitter",
+      "position": [
+        2064,
+        1248
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "e959d5a8-d311-4a29-b400-7c07468a72fe",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $binary.data.mimeType }}",
+                    "rightValue": "application/pdf"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "application/pdf"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "d5ae6f2d-e62d-4e08-aa06-629e6dfa7ee8",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $binary.data.mimeType }}",
+                    "rightValue": "text/csv"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "text/csv"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d5107737-91d4-444d-b2fc-4bf600cfe051",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        112,
+        1040
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"title\": \"Test Title (Replace it with real title\",\n    \"description\":\"Test Description (Replace it with real description)\"\n}"
+      },
+      "id": "7160a1f3-8cf7-49a6-bbb5-73dd563423c6",
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "position": [
+        1008,
+        1184
+      ],
+      "typeVersion": 1.2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=<document> \n{{ $('Document Data').first().json.data }}\n</document> \n\nHere is the chunk we want to situate within the overall document:\n\n<chunk> \n{{ $json.chunk }}\n</chunk> \n\nPlease:\n- Provide a short and succinct **context** to situate this chunk within the document for improved search retrieval.\n- Return the **original chunk** exactly as provided unless a correction is necessary.\n- If the chunk contains an **incomplete number, percentage, or entity**, correct it using the full document.\n- If part of a **sentence is cut off**, reconstruct the missing words only if necessary for clarity.\n- If the chunk is part of a table, include the complete table entry to maintain data integrity\n- Do not add any additional explanations or formatting beyond the required output.\n\nFill in the following format:\n[succinct context] : [original chunk or corrected version if necessary]\n\nYour response should contain only the text that replaces these placeholders, without including the placeholder labels themselves."
+      },
+      "id": "a16491c0-564e-4b20-b9ff-be3e59948420",
+      "name": "Process Context",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        1424,
+        992
+      ],
+      "typeVersion": 1.6
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"data\":  {{ JSON.stringify($json.text) }}\n} ",
+        "options": {}
+      },
+      "id": "749878b9-5e18-489c-a33e-2e4a31e4c981",
+      "name": "Document Data",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        560,
+        1040
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "chunks",
+        "options": {
+          "destinationFieldName": "chunk"
+        }
+      },
+      "id": "a0fb7771-c305-40c9-ae4f-158168179bda",
+      "name": "Split Out",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        1168,
+        992
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "maxItems": 50
+      },
+      "id": "9bcc1765-565a-4393-b347-f3ef26b498a0",
+      "name": "Limit",
+      "type": "n8n-nodes-base.limit",
+      "position": [
+        1296,
+        992
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "concatenate",
+              "field": "text",
+              "separateBy": "other",
+              "customSeparator": "###SPLIT###"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d8824494-b73d-4149-930d-6df4a05f48fe",
+      "name": "Summarize",
+      "type": "n8n-nodes-base.summarize",
+      "position": [
+        1696,
+        992
+      ],
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "content": "## 📁 Traitement de Données depuis les documents uploadés\nSurveille automatiquement vos uploads et traite les nouveaux fichiers. Lorsque vous téléchargez un PDF, CSV ou Google Doc, cette section télécharge le fichier, extrait tout le contenu textuel et le prépare pour l'analyse IA. Considérez-le comme votre lecteur de documents automatique qui ne dort jamais.\n\n👉🏻 Possible de traiter les images dans les documents en ajoutant une brique \"OCR\" avec mistral par exemple",
+        "height": 592,
+        "width": 1080,
+        "color": 4
+      },
+      "id": "d488c014-44ec-4c32-9dec-c52417b0424f",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -320,
+        816
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 🧠 Pipeline de Téléchargement de Données RAG\nPrend le texte extrait de vos documents et le rend compatible avec l'IA. Il crée des résumés intelligents, divise les documents en fragments digestibles, ajoute du contexte à chaque élément et stocke tout dans une base de données consultable. C'est ici que vos documents deviennent des connaissances \"consultables par IA\" capables de répondre aux questions.",
+        "height": 588,
+        "width": 1476,
+        "color": 4
+      },
+      "id": "494faf4a-ecb8-4243-a567-3ec3c3b7636b",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        784,
+        816
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create metadata title and metadata description based on the document specified below (below ##Document). Metadata title and metadata description will be used to seperate data in vector DB that will be used for RAG.\n\n##Document\n{{ $('Document Data').item.json.data }}",
+        "hasOutputParser": true
+      },
+      "id": "68f1bcdd-9971-4ec3-b753-38bf7d07a5e6",
+      "name": "Create Metadata Title & Description",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "position": [
+        784,
+        992
+      ],
+      "typeVersion": 1.6
+    },
+    {
+      "parameters": {
+        "jsCode": "const chunkSize = 1000;\nconst chunkOverlap = 200;\n//const text = $node[\"ABC\"].json.data.replace(/\\n/, '');\nconst text = $items(\"Document Data\")[0].json.data.replace(/\\n/, '');\n\nconst chunks = [];\nlet remainingText = text;\n\nwhile (remainingText.length > 0) {\n    let splitPoint;\n\n    // Try splitting at paragraph level first\n    splitPoint = remainingText.lastIndexOf(\"\\n\\n\", chunkSize);\n    \n    // If no paragraph split, try splitting at sentence level\n    if (splitPoint === -1) {\n        splitPoint = remainingText.lastIndexOf(\". \", chunkSize);\n    }\n\n    // If no sentence split, try splitting at word level\n    if (splitPoint === -1) {\n        splitPoint = remainingText.lastIndexOf(\" \", chunkSize);\n    }\n\n    // If still no split point, force cut at chunkSize\n    if (splitPoint === -1 || splitPoint < chunkSize * 0.5) {  \n        splitPoint = chunkSize; // Hard split if no good split point\n    }\n\n    // Extract chunk and adjust remaining text with overlap\n    let chunk = remainingText.substring(0, splitPoint).trim();\n    chunks.push(chunk);\n\n    // Move the pointer forward while keeping the overlap\n    remainingText = remainingText.substring(Math.max(0, splitPoint - chunkOverlap)).trim();\n\n    // Break if remaining text is too small to form another chunk\n    if (remainingText.length < chunkSize * 0.2) {\n        chunks.push(remainingText);\n        break;\n    }\n}\n\nreturn { chunks };"
+      },
+      "id": "e0e31b1e-62a7-4a13-97e7-10fd98dc2f82",
+      "name": "Split into chunks",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1040,
+        992
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Message de l'utilisateur :\n{{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "=Assistant amical – uniquement sur [SUJET DES DOCUMENTS] (base vectorielle)\n\nRègles :\n- Réponds seulement si la question est dans les rapports à disposition\n- Rien trouvé / hors sujet → réponse amicale + invitation à reformuler climat/impacts/scénarios/etc.\n- Jamais inventer ni extrapoler\n\nStyle : {{ $json.mode === \"concise\" ? \"court + citation\" : \"détaillé + contexte + citations\" }}\n\nCitation : Rapport … – p.XX – « texte »\n\nRésumé par mail :\n→ Si demandé → demande l’adresse email  \n→ Une fois obtenue → envoie le résumé via l’outil outlook/messagerie (mail au format html)"
+        }
+      },
+      "id": "b94fec31-378d-4c07-9457-ca7e3683a32a",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        224,
+        448
+      ],
+      "typeVersion": 1.8
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "id": "d2c327de-c196-4521-8603-669c34cbf0a1",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "position": [
+        272,
+        688
+      ],
+      "typeVersion": 1.3
+    },
+    {
+      "parameters": {
+        "content": "## Agent de Chat IA - Chattez avec vos documents stockés dans Qdrant Vector Store\nVotre assistant IA personnel qui peut répondre aux questions sur tous vos documents téléchargés. Posez n'importe quelle question en français courant - il recherche dans votre base de données documentaire, trouve les informations pertinentes et vous fournit des réponses précises avec des références sources. Il se souvient de votre conversation et n'invente jamais d'informations.\n\n💡 Bonus : l'agent est capable d'utiliser l'outil outlook pour vous envoyer des mails (pour recevoir un résumé de la conversation par mail par exemple)",
+        "height": 488,
+        "width": 940,
+        "color": 4
+      },
+      "id": "c2fe34bd-07a3-4598-b501-73670b898340",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -32,
+        288
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 📄 Traitement de Documents RAG Alimenté par IA & Chatbot, Qdrant, Mistral\n**Ce que fait ce flux de travail :**\n- Surveille un dossier ou formulaire  pour détecter de nouveaux documents\n- Extrait le texte des fichiers PDF/CSV\n- Améliore le texte à l'aide de l'IA (Mistral)\n- Découpe et transforme le texte en embeddings à l'aide de Mistral\n- Stocke les données vectorielles dans Qdrant pour la recherche sémantique\n- Permet aux utilisateurs de discuter avec les documents en utilisant Mistral",
+        "height": 592,
+        "width": 380,
+        "color": 5
+      },
+      "id": "c4920a88-6c46-44d6-bb36-88bb9908f9a6",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -720,
+        816
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 📋 Traitement de Données & Flux de Travail RAG\n### 📁 Étape 1 : Déclencheur Google Drive  \nSurveille un formulaire spécifique pour détecter les nouveaux téléchargements de fichiers. Se déclenche toutes les minutes.\n### 🔁 Étape 2 : Boucle sur les Fichiers Téléchargés  \nGarantit que chaque fichier téléchargé est traité un par un pour éviter les problèmes de traitement en masse.\n### 🆔 Étape 3 : Définir l'ID du Fichier  \nExtrait et stocke l'ID du fichier pour référence dans les étapes ultérieures.\n### 📥 Étape 4 : Télécharger le Fichier  \nTélécharge le fichier (PDF, CSV)\n### 🧭 Étape 5 : Aiguillage par Type de Fichier  \nOriente le fichier selon son type :\n- PDF → Aller vers l'Extracteur de Texte PDF\n- CSV → Aller vers l'Extracteur CSV\n### 📄 Étape 6A : Extraire le Texte du PDF  \nExtrait le contenu textuel brut du fichier PDF.\n### 📊 Étape 6B : Extraire le Texte du CSV  \nExtrait et formate les données CSV en une chaîne lisible.\n### 📦 Étape 7 : Formater les Données du Document  \nEncapsule le texte extrait en JSON : `{\"data\": \"contenu textuel\"}`.\n### 🧠 Étape 8 : Générer les Métadonnées  \nUtilise l'IA Mistral pour créer un titre et une description du document.\n### ✂️ Étape 9 : Découper en Fragments  \nDivise le texte du document en fragments de 1000 caractères avec un chevauchement de 200 caractères, intelligemment au niveau des paragraphes/phrases/mots.\n### 🔄 Étape 10 : Séparer les Fragments  \nConvertit le tableau de fragments en éléments individuels du flux de travail.\n### 🚫 Étape 11 : Limiter à 20 Fragments  \nLimite le traitement aux 20 premiers fragments pour contrôler la charge de l'API et du traitement.\n### 🧠 Étape 12 : Améliorer le Contexte du Fragment  \nChaque fragment est amélioré pour une meilleure clarté, continuité et contexte en utilisant mistral.\n### 🧩 Étape 13 : Résumer  \nCombine les fragments améliorés en utilisant le séparateur `###SPLIT###` pour un traitement ultérieur.\n### 🧷 Étape 14 : Re-Diviser les Fragments Améliorés  \nDivise à nouveau le texte combiné en fragments en utilisant le séparateur `###SPLIT###`.\n### 🧬 Étape 15 : Générer les Embeddings  \nConvertit les fragments de texte en embeddings vectoriels pour la recherche sémantique.\n### 🗂️ Étape 16 : Ajouter les Métadonnées  \nChaque fragment est encapsulé avec des métadonnées (ID du fichier, titre, description) pour la base de données vectorielle.\n### 🧠 Étape 17 : Stocker dans la Base de Données Vectorielle Supabase  \nStocke les embeddings dans la base vectoriel Qdrant pour une récupération sémantique ultérieure.",
+        "height": 1148,
+        "width": 836,
+        "color": 5
+      },
+      "id": "610d76d5-0a73-4507-a017-9d1440db9de6",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1568,
+        256
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## CONFIGURATION REQUISE  \n### 📚 Base de Données : Table Qdrant `documents`\nPour gérer et stocker les embeddings et métadonnées, nous utilisons une table Qdrant avec le schéma suivant :\n```sql\n# Création de la collection\nclient.create_collection(\n    collection_name=\"documents\",\n    vectors_config=VectorParams(\n        size=1536,          # Taille des embeddings (selon le modèle utilisé)\n        distance=Distance.COSINE\n    )\n)\n```\n### 🔐 Identifiants & Clés Requis\n✅ **Identifiant Sharepoint** \n✅ **Clé API Qdrant & URL du Projet** \n✅ **Clé API Outlook**\n✅ **Clé API Mistral**",
+        "height": 392,
+        "width": 1240,
+        "color": 5
+      },
+      "id": "91c83d25-9753-4753-8af3-391b0c8be28c",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -48,
+        -112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## 🤖 FLUX DE TRAVAIL DE L'INTERFACE DE CHAT\n### 💬 Étape 1 : Déclencheur de Chat  \nÉcoute la saisie de chat de l'utilisateur (par exemple, une question sur un document).\n### 🧠 Étape 2 : Mémoire Simple  \nStocke les 10 derniers messages pour maintenir le contexte de la conversation.\n### 🔍 Étape 3 : Recherche Vectorielle (aérant)  \nRecherche dans la base de données vectorielle Qdrant les fragments pertinents liés à la question de l'utilisateur.\n### 🧬 Étape 4 : Conversion de la Question en Embedding  \nUtilise OpenAI pour transformer le texte de la question en embedding pour la recherche par similarité.\n### 🗨️ Étape 5 : Génération de Réponse \nUtilise le contexte + la question pour générer une réponse en langage naturel.\n### 🧠 Étape 6 : Agent IA  \nLogique finale de l'agent :\n- Recherche d'abord dans la base de données vectorielle\n- Répond en se basant sur les fragments trouvés\n- Attribue la réponse au document correct\n- Admet si la réponse n'est pas trouvée (pas d'hallucination)",
+        "height": 520,
+        "width": 660,
+        "color": 5
+      },
+      "id": "76c5e472-262a-454a-8695-07b4bf1e7cc7",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -720,
+        256
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "📌 **Comprendre le Nœud Limite**\nLe **Nœud Limite** restreint le nombre d'enregistrements ou d'éléments traités dans votre flux de travail. Ceci est particulièrement utile pour :\n✅ **Tester** votre configuration avec un ensemble de données plus petit\n✅ **Contrôler l'utilisation des ressources** pendant le traitement\n💡 **Vous pouvez** :\n* **Ajuster la valeur de la limite** pour l'adapter aux besoins de votre flux de travail\n* **Supprimer complètement le Nœud Limite** pour traiter toutes les données disponibles",
+        "height": 268,
+        "width": 420,
+        "color": 5
+      },
+      "id": "418de1e3-210e-4fe8-a23a-002a56badf31",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1072,
+        1136
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "Stellantis",
+          "mode": "list",
+          "cachedResultName": "Stellantis"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        1888,
+        992
+      ],
+      "id": "d094f230-3de9-43e2-bdab-dee709407210",
+      "name": "Qdrant Vector Store",
+      "credentials": {
+        "qdrantApi": {
+          "id": "QXuLT0K9geU8KRbL",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "mistral-large-latest",
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        112,
+        656
+      ],
+      "id": "93fd9321-5514-431a-8c90-1d9b4ebee233",
+      "name": "Mistral Cloud Chat Model",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "qKy2DkNCtpKhTAlh",
+          "name": "Mistral Cloud account louis"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0144a9a7-6e73-46c4-979f-838ad5c62b89",
+              "name": "file_id",
+              "type": "string",
+              "value": "={{ $json.Fichiers[0].filename }}"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "4ef4ab4a-bdb5-4328-a972-774d68f005a6",
+      "name": "Set File ID1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -112,
+        1040
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "model": "mistral-large-latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        832,
+        1184
+      ],
+      "id": "789b7509-ed48-4b2a-b2ff-505b467aa6c6",
+      "name": "Mistral Cloud Chat Model1",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "qKy2DkNCtpKhTAlh",
+          "name": "Mistral Cloud account louis"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        1856,
+        1152
+      ],
+      "id": "ffac2dc2-ae73-4a32-9379-ff4d6e3e0e56",
+      "name": "Embeddings Mistral Cloud1",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "qKy2DkNCtpKhTAlh",
+          "name": "Mistral Cloud account louis"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Récupère les rapports stellantis",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "Stellantis",
+          "mode": "list",
+          "cachedResultName": "Stellantis"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        512,
+        576
+      ],
+      "id": "ca265129-cb30-42d3-86c6-d8702df87288",
+      "name": "Qdrant Vector Store1",
+      "credentials": {
+        "qdrantApi": {
+          "id": "QXuLT0K9geU8KRbL",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsMistralCloud",
+      "typeVersion": 1,
+      "position": [
+        592,
+        688
+      ],
+      "id": "63c48c90-51ac-4120-89ee-f892bfe448f2",
+      "name": "Embeddings Mistral Cloud",
+      "credentials": {
+        "mistralCloudApi": {
+          "id": "qKy2DkNCtpKhTAlh",
+          "name": "Mistral Cloud account louis"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Checklist de duplication ✅\n1. BDD changée\n2. Nouveaux docs uploadés\n3. Prompt changé pour l'assistant\n4. Url d'utilisation du chat à adapter dans mon interface\n",
+        "height": 488,
+        "width": 252
+      },
+      "id": "7d333d2d-1823-42d0-b7df-a32dd4fadf51",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        928,
+        288
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        16,
+        480
+      ],
+      "id": "d4821ced-6446-47fe-9b46-72d369ebaf36",
+      "name": "When chat message received",
+      "webhookId": "3b438e36-0c0e-431b-8b91-36043f36d82c"
+    },
+    {
+      "parameters": {
+        "formTitle": "Documents pour l'agent IA",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "data",
+              "fieldType": "file",
+              "acceptFileTypes": "txt, csv, xls, pdf, docx, doc"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -304,
+        1040
+      ],
+      "id": "9bda194f-ff23-475e-be70-beebb57824a3",
+      "name": "On form submission",
+      "webhookId": "f95a75e2-930e-4ab0-baf4-f78a25ded0f4"
+    },
+    {
+      "parameters": {
+        "toRecipients": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', `Destinataire du résumé par e-mail`, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', `Objet du mail`, 'string') }}",
+        "bodyContent": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', `Corps du mail au format html`, 'string') }}",
+        "additionalFields": {
+          "bodyContentType": "html"
+        }
+      },
+      "type": "n8n-nodes-base.microsoftOutlookTool",
+      "typeVersion": 2,
+      "position": [
+        416,
+        640
+      ],
+      "id": "13d76c45-9c20-4e9c-a172-59fc949f64cc",
+      "name": "Send a message in Microsoft Outlook",
+      "webhookId": "70e9ff35-2cb9-4a64-8916-3a9ed0aaeade",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "VXNsvvPTaEUolGT4",
+          "name": "Microsoft Outlook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "![Louis](https://raw.githubusercontent.com/grunti/MyWebsite/main/assets/picture-louis7.png?width=180)\n\nHey, I'm **Louis** 👋\n\nI turned my **passion for no-code & automation** into a full-time gig. From n8n workflows to AI-powered cash routines, I build tools that **pilot cash & lighten life**.\n\n- 📺 **YouTube**: [@cash-routine](https://www.youtube.com/@cash-routine)\n- 🛠️ **Freelance**: [My fiverr](https://fr.fiverr.com/s/R7ZlNL5)\n- 🚀 **Agence Alain (IA)**: [agence-alain.fr](https://agence-alain.fr/)\n- 📧 **E-mail me :** pro.ldelahaye@gmail.com\n\n\n**Don't hesitate to get in touch** if you want to **automate your business** or need **help with a workflow** — I'm here to make it happen! 💬",
+        "height": 692,
+        "width": 396,
+        "color": 3
+      },
+      "name": "My CTA Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        80
+      ],
+      "id": "998093ee-1492-489d-9e42-638f3f134faa"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Extract from PDF": {
+      "main": [
+        [
+          {
+            "node": "Document Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from CSV": {
+      "main": [
+        [
+          {
+            "node": "Document Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Extract from PDF",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Create Metadata Title & Description",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Context": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Document Data": {
+      "main": [
+        [
+          {
+            "node": "Create Metadata Title & Description",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Process Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Metadata Title & Description": {
+      "main": [
+        [
+          {
+            "node": "Split into chunks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split into chunks": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set File ID1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mistral Cloud Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Create Metadata Title & Description",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Process Context",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Mistral Cloud1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Mistral Cloud": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Set File ID1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message in Microsoft Outlook": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "8e386caf-fe45-4bec-a37f-de25f2f08d2e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dca66bfe20538326afcf0ea9818c4e437640a050446b589da002699d11b2eea7"
+  },
+  "id": "p24yBEfPUfKYkNok",
+  "tags": []
+}

@@ -1,0 +1,731 @@
+{
+  "name": "🔥 X & Reddit trending Topics Finder",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtHour": 12
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -592,
+        -96
+      ],
+      "id": "f03e68cd-cf6b-4f1e-bc90-6368b2346a64",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f86fd206-d6d7-4bd9-a8a3-b1be503cf475",
+              "name": "system prompt",
+              "value": "Tu es un **analyste de tendances** spécialisé dans :\n\n- L’**intelligence artificielle**\n- L’outil **n8n**\n- L’**automatisation**\n\n🎯 **Objectif final :** fournir une veille stratégique ultra-actionnable à un créateur YouTube.\n\n👉 Identifier des **sujets porteurs**, des **discussions récentes** et des **opportunités de monétisation concrètes**.\n\n---\n\n## 📍 Ce que tu dois chercher\n\n1. **Discussions récentes** (idéalement <24h) sur IA, n8n et automatisation.\n2. **Sujets tendance** et publications virales (Reddit, forums, communautés actives).\n3. Pour chaque sujet identifié :\n    - 🧭 **Tendance** : ce qui émerge, ce que la communauté observe ou construit.\n    - 💬 **Débat animé / Citation** : un extrait représentatif de la discussion.\n    - 💰 **Opportunité de monétisation** : comment transformer cette attention en revenu (contenu, service, produit, formation…).\n\n---\n\n## 🌐 Sources prioritaires (outils ou tools)\n- Reddit : r/n8n, r/n8nPro, r/OpenAI, grok (top 10 posts récents)\n- Autres communautés (Twitter/X)\n\n---\n\n## 🧭 Format de réponse attendu (Markdown condensé)\n- Moins de **4000 caractères**\n- Titres clairs en `##`\n- Mots importants en **gras**, mise en relief en *italique*\n- Listes à puces simples\n- Quelques **emojis** pour la lisibilité\n- Chaque sujet doit **raconter une histoire / une tension**\n- Penser **création de valeur + émotion + actualité**\n\n---\n\n## 🧱 Exemple de structure de sortie attendue\n\n{\n  \"sujet1\": {\n    \"titre\": \"Intelligence Artificielle Low-Code\",\n    \"description\": \"Tendance : explosion des agents autonomes. Débat : certains craignent le contrôle et l'éthique. Opportunité : créer une vidéo expliquant comment utiliser AutoGPT pour automatiser ses tâches.\"\n  },\n  \"sujet2\": {\n    \"titre\": \"n8n Connecteurs avancés\",\n    \"description\": \"Tendance : création de nodes personnalisés et intégration API complexes. Débat : difficultés d'authentification OAuth. Opportunité : tutoriel vidéo étape par étape pour intégrer une API exotique.\"\n  },\n  \"sujet3\": {\n    \"titre\": \"Automatisation du contenu IA\",\n    \"description\": \"Tendance : génération de contenu texte, image et vidéo via IA. Débat : qualité et originalité du contenu. Opportunité : vidéo montrant comment automatiser un workflow créatif complet.\"\n  },\n  \"sujet4\": {\n    \"titre\": \"Agents IA pour marketing\",\n    \"description\": \"Tendance : agents capables de gérer campagnes marketing. Débat : sécurité et fiabilité. Opportunité : montrer un cas pratique d’agent IA exécutant une campagne simple.\"\n  },\n  \"sujet5\": {\n    \"titre\": \"Sécurité et gouvernance IA\",\n    \"description\": \"Tendance : discussions autour des risques et régulations. Débat : peur vs opportunité. Opportunité : vidéo expliquant les bonnes pratiques et outils pour sécuriser les IA dans un business.\"\n  }\n}\n\n---\n\n## 🧭 Rappel au modèle :\n- Sois **concret**, **court**, **orienté action**.\n- Donne des **phrases fortes / citations** quand possible.\n- Privilégie des sujets récents et vivants.\n- Inspire une **idée de vidéo + une idée de monétisation** par sujet.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -368,
+        -96
+      ],
+      "id": "eaf30fe7-bc36-4f9f-8c4b-d27e4972d8fe",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json['system prompt'] }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -64,
+        -96
+      ],
+      "id": "23a24e77-cc31-49fd-8ade-c1e244cbedc3",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "chatId": "7771151344",
+        "text": "={{ $json.telegramText }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        592,
+        -96
+      ],
+      "id": "4eb0cb35-ec76-4432-91b9-6e3dbb77df54",
+      "name": "Send a text message1",
+      "webhookId": "71ce82c6-df8a-4ce2-90fa-7fdacfa0c994",
+      "executeOnce": false,
+      "credentials": {
+        "telegramApi": {
+          "id": "lFjxCEcA49K4dWS9",
+          "name": "Telegram account transcript"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3-pro-preview",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        64
+      ],
+      "id": "7a24b350-7951-4229-a7d2-c90666f29508",
+      "name": "Google Gemini Chat Model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FGkCpwjwdHngwi9v",
+          "name": "Google Gemini(PaLM) Api account Louis Console"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Get many posts in Subeddit n8n",
+        "operation": "getAll",
+        "subreddit": "n8n",
+        "limit": 10,
+        "filters": {
+          "category": "top"
+        }
+      },
+      "type": "n8n-nodes-base.redditTool",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        64
+      ],
+      "id": "e3ecb008-2f2e-44a9-86f9-4f83df822542",
+      "name": "Get many posts in Reddit",
+      "credentials": {
+        "redditOAuth2Api": {
+          "id": "UM01VYdcI7Sa8N4N",
+          "name": "Reddit account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Get many posts in Subeddit Automate",
+        "operation": "getAll",
+        "subreddit": "Automate",
+        "limit": 10,
+        "filters": {
+          "category": "top"
+        }
+      },
+      "type": "n8n-nodes-base.redditTool",
+      "typeVersion": 1,
+      "position": [
+        32,
+        64
+      ],
+      "id": "e142f4e3-e65b-4bd2-9c70-b4813d7b3f11",
+      "name": "Get many posts in Reddit2",
+      "credentials": {
+        "redditOAuth2Api": {
+          "id": "UM01VYdcI7Sa8N4N",
+          "name": "Reddit account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Search Tweets in X about automations",
+        "operation": "search",
+        "searchText": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Search_Term', ``, 'string') }}",
+        "limit": "=5",
+        "additionalFields": {
+          "sortOrder": "recency",
+          "tweetFieldsObject": [
+            "conversation_id",
+            "edit_controls",
+            "text"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.twitterTool",
+      "typeVersion": 2,
+      "position": [
+        176,
+        64
+      ],
+      "id": "1459661e-f1bc-4f74-8985-11964e085851",
+      "name": "Search Tweets in X",
+      "credentials": {
+        "twitterOAuth2Api": {
+          "id": "f21bqVwpxhwlJV3L",
+          "name": "X account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Get many posts in Subeddit OpenAI",
+        "operation": "getAll",
+        "subreddit": "OpenAI",
+        "limit": 10,
+        "filters": {
+          "category": "top"
+        }
+      },
+      "type": "n8n-nodes-base.redditTool",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        192
+      ],
+      "id": "c0d2deff-67e8-4a77-85df-0873d7c6851d",
+      "name": "Get many posts in Reddit1",
+      "credentials": {
+        "redditOAuth2Api": {
+          "id": "UM01VYdcI7Sa8N4N",
+          "name": "Reddit account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"sujet1\": {\n    \"titre\": \"Intelligence Artificielle Low-Code\",\n    \"description\": \"Tendance : explosion des agents autonomes. Débat : certains craignent le contrôle et l'éthique. Opportunité : créer une vidéo expliquant comment utiliser AutoGPT pour automatiser ses tâches.\"\n  },\n  \"sujet2\": {\n    \"titre\": \"n8n Connecteurs avancés\",\n    \"description\": \"Tendance : création de nodes personnalisés et intégration API complexes. Débat : difficultés d'authentification OAuth. Opportunité : tutoriel vidéo étape par étape pour intégrer une API exotique.\"\n  },\n  \"sujet3\": {\n    \"titre\": \"Automatisation du contenu IA\",\n    \"description\": \"Tendance : génération de contenu texte, image et vidéo via IA. Débat : qualité et originalité du contenu. Opportunité : vidéo montrant comment automatiser un workflow créatif complet.\"\n  },\n  \"sujet4\": {\n    \"titre\": \"Agents IA pour marketing\",\n    \"description\": \"Tendance : agents capables de gérer campagnes marketing. Débat : sécurité et fiabilité. Opportunité : montrer un cas pratique d’agent IA exécutant une campagne simple.\"\n  },\n  \"sujet5\": {\n    \"titre\": \"Sécurité et gouvernance IA\",\n    \"description\": \"Tendance : discussions autour des risques et régulations. Débat : peur vs opportunité. Opportunité : vidéo expliquant les bonnes pratiques et outils pour sécuriser les IA dans un business.\"\n  }\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        272,
+        64
+      ],
+      "id": "975b3765-7a05-473d-a586-3d5c6ea2654d",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        288,
+        208
+      ],
+      "id": "aabde069-eb3b-45ea-8c6c-da4d71b21c2e",
+      "name": "Google Gemini Chat Model5",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "FGkCpwjwdHngwi9v",
+          "name": "Google Gemini(PaLM) Api account Louis Console"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const output = $json.output;\nlet telegramMessages = [];\nlet currentMessage = '';\n\nfor (let key in output) {\n  const chunk = `*${output[key].titre}*\\n${output[key].description}\\n\\n`;\n  \n  // If adding this chunk exceeds 4000 characters, push current message and start a new one\n  if ((currentMessage + chunk).length > 4000) {\n    telegramMessages.push(currentMessage.trim());\n    currentMessage = chunk;\n  } else {\n    currentMessage += chunk;\n  }\n}\n\n// Push the last remaining message\nif (currentMessage) {\n  telegramMessages.push(currentMessage.trim());\n}\n\n// Return as array of JSON items, each can be sent separately to Telegram\nreturn telegramMessages.map(msg => ({ json: { telegramText: msg } }));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        -96
+      ],
+      "id": "0f249f57-e6ca-4b10-ab1b-378f6fd41cc0",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $json.result.text;\nconst chunkSize = 2000;\n\n// Comprehensive library of appropriate Notion page emojis\nconst emojiLibrary = [\n  // 📚 Knowledge & Learning\n  '📚', '📖', '📝', '✏️', '🧠', '💡', '🎓', '🔍', '📊', '📈',\n  \n  // 💼 Work & Productivity  \n  '💼', '📋', '✅', '📅', '⏰', '⚡', '🚀', '🎯', '📈', '📊',\n  \n  // 🎨 Creative & Design\n  '🎨', '✨', '🌟', '🎉', '🎨', '🖌️', '🎬', '📸', '🎵', '🎤',\n  \n  // 🌱 Personal Growth\n  '🌱', '🌟', '💪', '🧘', '🌈', '💖', '🙌', '👏', '🎊', '🥳',\n  \n  // 🏢 Business & Projects\n  '🏢', '🏗️', '🔧', '⚙️', '💻', '🖥️', '📱', '💾', '🔒', '📧',\n  \n  // 📝 Documents & Notes\n  '📄', '📃', '📌', '📎', '📏', '📐', '📒', '🗂️', '📁', '📂',\n  \n  // 🏠 Home & Lifestyle\n  '🏠', '🏡', '🛋️', '🍳', '☕', '🍵', '🌸', '🌺', '🍃', '🌿',\n  \n  // 🎯 Goals & Planning\n  '🎯', '📍', '🗺️', '🧭', '📍', '🔄', '🔄', '🔄', '🔄', '🔄',\n  \n  // Popular & Versatile\n  '😊', '😂', '❤️', '👍', '✨', '🌟', '🚀', '🎉', '💯', '🔥'\n];\n\n// Pick ONE random emoji from the comprehensive library\nconst randomIndex = Math.floor(Math.random() * emojiLibrary.length);\nconst pageEmoji = emojiLibrary[randomIndex];\n\nconst result = {\n  pageEmoji: pageEmoji, // Single emoji for the Notion page\n  chunks: {}\n};\n\nfor (let i = 0; i < text.length; i += chunkSize) {\n  const partNumber = Math.floor(i / chunkSize) + 1;\n  result.chunks[`part${partNumber}`] = text.slice(i, i + chunkSize);\n}\n\nreturn [{ json: result }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        784,
+        -96
+      ],
+      "id": "3f41fc99-4a19-487e-bf67-e518b50af282",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "pageId": {
+          "__rl": true,
+          "value": "=https://www.notion.so/News-Trends-Actu-28df5b86dd77800d9abee33a8ee86613",
+          "mode": "url"
+        },
+        "title": "=Sujets chauds du {{ $now.toLocaleString() }}",
+        "blockUi": {
+          "blockValues": [
+            {
+              "textContent": "={{ $json.chunks.part1 }}"
+            }
+          ]
+        },
+        "options": {
+          "iconType": "emoji",
+          "icon": "={{ $json.pageEmoji }}"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1024,
+        -96
+      ],
+      "id": "0edb5e55-8f0c-4f34-af8d-83cfa38d6909",
+      "name": "Create a page",
+      "credentials": {
+        "notionApi": {
+          "id": "dxUJldsm7AUMTlHI",
+          "name": "Notion account Louis"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "blockId": {
+          "__rl": true,
+          "value": "={{ $json.url }}",
+          "mode": "url"
+        },
+        "blockUi": {
+          "blockValues": [
+            {
+              "textContent": "={{ $('Code in JavaScript1').item.json.chunks.part2 || \"\" }}"
+            },
+            {
+              "textContent": "={{ $('Code in JavaScript1').item.json.part3 || \"\"}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1232,
+        -96
+      ],
+      "id": "2f5079c0-ab57-4c68-9032-bf27cace5651",
+      "name": "Append a block",
+      "credentials": {
+        "notionApi": {
+          "id": "dxUJldsm7AUMTlHI",
+          "name": "Notion account Louis"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Get many posts in Subeddit grok",
+        "operation": "getAll",
+        "subreddit": "grok",
+        "limit": 10,
+        "filters": {
+          "category": "top"
+        }
+      },
+      "type": "n8n-nodes-base.redditTool",
+      "typeVersion": 1,
+      "position": [
+        128,
+        192
+      ],
+      "id": "0054bb74-5f2c-4455-92e8-9364c8bf57ba",
+      "name": "Get many posts in Reddit3",
+      "credentials": {
+        "redditOAuth2Api": {
+          "id": "UM01VYdcI7Sa8N4N",
+          "name": "Reddit account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Set the activation trigger\nFor me it will run every day at 8am",
+        "height": 368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        -240
+      ],
+      "id": "cf020825-ac2f-41e3-8e59-befdfc16e9c2",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Prompting part\nThis is where I custom my prompts. It is also possible to insert directly in the AI Agent Node",
+        "height": 288,
+        "width": 224,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -432,
+        -240
+      ],
+      "id": "00904859-627a-4490-84fc-50077fda906a",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## AI Agent\nThis AI Agent takes the prompt as input and performs the following : \n- Looks for latest topics among a set of different subreddits\n- Retrieves topics related to some specific X keywords\n",
+        "height": 288,
+        "width": 528,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        -240
+      ],
+      "id": "5fab8662-570b-4ece-a2c4-8f9cfa1e6dca",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## AI Agent Tools\nNote that the subreddits and topics are filled and fixed in this template, but one could choose to let the AI Agent decide which topics to retrieve\n",
+        "height": 144,
+        "width": 352,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        352
+      ],
+      "id": "6ccd836a-8bb3-4645-b6aa-bcde94eae8df",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## AI Agent Model\nModel is Gemini 2.5 Pro in this case, which makes a perfect job for what I expect\n",
+        "height": 144,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        208
+      ],
+      "id": "71e9ff38-8743-4a2d-b55c-7ac023a8b45c",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## AI Agent Output parser\nA JSON example is provided to give 5 :\n- Titles\n- Descriptions\nFallback model is 2.0 Flash there",
+        "height": 256,
+        "width": 176,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        400,
+        176
+      ],
+      "id": "650de7ae-7d6a-4508-b8be-bbcd904eb5b1",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## Parse Markdown for Telegram\nThis JavaScript code formats and splits a JSON object into multiple text messages, ensuring each message complies with Telegram's character limit (4096 characters per message). And then sends it !",
+        "height": 256,
+        "width": 384,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        352,
+        -240
+      ],
+      "id": "5c40f3d8-02fb-4068-9233-27b99dc8a3d8",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## Parse for notion\nThere we :\n- retrieve the output and splits it into 2000 characters\n- choose a random emoji",
+        "height": 288,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        752,
+        -240
+      ],
+      "id": "a10c0821-71b5-4699-81b4-9be4aca290d9",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "## Stores it in Notion\nThis part saves the outputs from today in a Notion Page\n- The first node creates a page and adds the first chunk (2000 characters)\n- The second node adds the next chunk(s) to the newly created page",
+        "height": 288,
+        "width": 496,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1008,
+        -240
+      ],
+      "id": "d236cddb-4988-4745-9fd6-590642132160",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "![Louis](https://raw.githubusercontent.com/grunti/MyWebsite/main/assets/picture-louis7.png?width=180)\n\nHey, I'm **Louis** 👋\n\nI turned my **passion for no-code & automation** into a full-time gig. From n8n workflows to AI-powered cash routines, I build tools that **pilot cash & lighten life**.\n\n- 📺 **YouTube**: [@cash-routine](https://www.youtube.com/@cash-routine)\n- 🛠️ **Freelance**: [My fiverr](https://fr.fiverr.com/s/R7ZlNL5)\n- 🚀 **Agence Alain (IA)**: [agence-alain.fr](https://agence-alain.fr/)\n- 📧 **E-mail me :** pro.ldelahaye@gmail.com\n\n\n**Don't hesitate to get in touch** if you want to **automate your business** or need **help with a workflow** — I'm here to make it happen! 💬",
+        "height": 692,
+        "width": 396,
+        "color": 3
+      },
+      "name": "My CTA Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1552,
+        -400
+      ],
+      "id": "a86c9ae0-5759-46b9-b0a6-d9cf6f85bf22"
+    }
+  ],
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2026-03-08T12:00:14.027+01:00",
+          "Readable date": "March 8th 2026, 12:00:14 pm",
+          "Readable time": "12:00:14 pm",
+          "Day of week": "Sunday",
+          "Year": "2026",
+          "Month": "March",
+          "Day of month": "08",
+          "Hour": "12",
+          "Minute": "00",
+          "Second": "14",
+          "Timezone": "Europe/Berlin (UTC+01:00)"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many posts in Reddit": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many posts in Reddit2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Tweets in X": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many posts in Reddit1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Create a page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a page": {
+      "main": [
+        [
+          {
+            "node": "Append a block",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many posts in Reddit3": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "78eTGPFUiST8fDqn"
+  },
+  "versionId": "a872e8b0-ee8c-4259-ba36-1ae0dacbca79",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dca66bfe20538326afcf0ea9818c4e437640a050446b589da002699d11b2eea7"
+  },
+  "id": "XxL9sY7qHP0vJYhh",
+  "tags": []
+}
