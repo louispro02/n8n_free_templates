@@ -1,0 +1,1508 @@
+{
+  "name": "Offres de stages 🛜",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "1Ayl5KUiHmE241UfiGZ5CfeISXIoq6Ya4pkro89TT4d4",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ayl5KUiHmE241UfiGZ5CfeISXIoq6Ya4pkro89TT4d4/edit?usp=drivesdk",
+          "cachedResultName": "Offres emplois n8n"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gid=0",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ayl5KUiHmE241UfiGZ5CfeISXIoq6Ya4pkro89TT4d4/edit#gid=0",
+          "cachedResultName": "Base des offres"
+        },
+        "columns": {
+          "value": {
+            "date": "={{ $('Wait').item.json.date }}",
+            "link": "={{ $('Wait').item.json.link }}",
+            "title": "={{ $('Wait').item.json.title }}",
+            "source": "={{ $('Wait').item.json.source }}",
+            "snippet": "={{ $('Wait').item.json.snippet }}",
+            "Com mail": "Non envoyé",
+            "Date ajout": "={{\n  (() => {\n    const formatter = new Intl.DateTimeFormat('fr-FR', {\n      timeZone: 'Europe/Paris',\n      year: 'numeric',\n      month: '2-digit',\n      day: '2-digit',\n      hour: '2-digit',\n      minute: '2-digit',\n      second: '2-digit',\n      hour12: false\n    });\n\n    const parts = formatter.formatToParts(new Date());\n    const get = type => parts.find(p => p.type === type)?.value;\n\n    return `${get('day')}/${get('month')}/${get('year')} ${get('hour')}:${get('minute')}:${get('second')}`;\n  })()\n}}\n\n",
+            "snippet_highlighted_words": "={{ $('Wait').item.json.snippet_highlighted_words.join(', ') }}"
+          },
+          "schema": [
+            {
+              "id": "Date ajout",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "Date ajout",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "title",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "title",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "snippet",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "snippet",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "link",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "link",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "date",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "snippet_highlighted_words",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "snippet_highlighted_words",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "source",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Com mail",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "Com mail",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Postuler",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "Postuler",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "link"
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "e5d218fe-8f58-400a-b2cd-b4f59cd8eeb9",
+      "name": "Append or update row in sheet1",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        1472,
+        752
+      ],
+      "executeOnce": false,
+      "typeVersion": 4.7,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "kplIavU6Ix016UIY",
+          "name": "Google Sheets account Louis"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "id": "20d87807-80fe-4df0-9e8f-bb95c80c9f74",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -816,
+        544
+      ],
+      "typeVersion": 1.2,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "amount": 6
+      },
+      "id": "7b39bec4-9cec-47aa-9ca4-8615fe940ad0",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        672,
+        624
+      ],
+      "webhookId": "829fa4d7-f84a-4666-9479-84d1d5fba097",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e12da2d1-d6a8-4ca4-9bc6-cdf1508a18bd",
+              "name": "dork2",
+              "type": "string",
+              "value": "( intitle:(stage OR internship OR intern OR stagiaire OR \"fin d'études\" OR \"fin d'étude\" OR \"end of studies\")\n  AND ( intitle:(M&A OR \"Transaction Services\" OR \"Fusions et Acquisitions\" OR valuation OR \"project finance\" OR \"Financial analyst\")\n        OR inurl:(transaction-services OR mergers-acquisitions OR fusions-acquisitions OR valuation OR project-finance OR financial-analyst) )\n)\nAND intext:(\"6 mois\" OR \"6 months\" OR \"six months\")\n\n-intext:2020 -intext:2021 -intext:2022 -intext:2023 -intext:2024\n-intitle:2020 -intitle:2021 -intitle:2022 -intitle:2023 -intitle:2024\n-inurl:2020 -inurl:2021 -inurl:2022 -inurl:2023 -inurl:2024\n\n-intitle:(product OR marketing OR développeur OR developpeur OR developer OR ingénieur OR engineer OR digital OR quantitatif OR quant OR scientifique OR design OR stratégie OR strategist OR audit OR legal OR law OR lawyer OR juriste OR avocat OR compliance OR réglementation OR prudentielle OR apprentissage)\n-intext:(product OR marketing OR développeur OR developpeur OR developer OR ingénieur OR engineer OR digital OR quantitatif OR quant OR scientifique OR design OR stratégie OR strategist OR audit OR legal OR law OR lawyer OR juriste OR avocat OR compliance OR réglementation OR prudentielle OR apprentissage)\n-inurl:(product OR marketing OR développeur OR developpeur OR developer OR ingénieur OR engineer OR digital OR quantitatif OR quant OR scientifique OR design OR stratégie OR strategist OR audit OR legal OR law OR lawyer OR juriste OR avocat OR compliance OR réglementation OR prudentielle OR apprentissage)\n\n-intext:(Tax OR Taxes OR Legal OR Law OR Lawyer OR Juriste OR Avocat OR IT OR Tech OR remote OR télétravail)\n"
+            },
+            {
+              "id": "783046ad-8f8e-4fae-8b8d-3febc8e52c92",
+              "name": "dork",
+              "value": "(   ( intitle:(\"professeur\" OR \"prof\" OR \"enseignant\" OR \"teacher\" OR \"instructor\") AND ( intitle:(\"FLE\" OR \"Français\" OR \"French\") ) )   OR   intext:(\"professeur de français\" OR \"enseignant FLE\" OR \"enseignant de français\" OR \"FLE teacher\" OR \"French teacher\" OR \"online French teacher\" OR \"French tutor\") ) AND (   ( intitle:(CDI OR CDD OR \"temps partiel\" OR \"temps plein\" OR contrat) )   OR   intext:(CDI OR CDD OR \"temps partiel\" OR contrat OR mission OR freelance OR vacataire OR \"auto-entrepreneur\" OR indépendant OR \"mission ponctuelle\") ) AND (   intext:(remote OR télétravail OR \"à distance\" OR online OR \"enseignement à distance\" OR \"work from home\" OR telecommute OR \"distance learning\")   OR   intext:(Lyon OR Villeurbanne OR Bron OR Vénissieux OR Caluire OR Écully OR \"Auvergne-Rhône-Alpes\" OR \"Vaulx-en-Velin\" OR \"Saint-Priest\" OR Meyzieu) ) -intext:stage -intitle:stage -inurl:stage -intext:alternance -intext:apprentissage -intext:intern -intitle:intern -inurl:intern -intext:(développeur OR developer OR ingénieur OR engineer OR marketing OR product OR data OR quantitatif OR audit OR juriste OR avocat OR \"project finance\" OR legal OR law OR HR) -intext:2020 -intext:2021 -intext:2022 -intext:2023 -intext:2024",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8f9dda71-c3d3-4665-a0dc-b76c175f9ff9",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -592,
+        544
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "organic_results",
+        "options": {}
+      },
+      "id": "df0b0019-11a0-4c18-9625-b3fe151bbb70",
+      "name": "Split Out5",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        0,
+        880
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "=site:welcometothejungle.com/fr/companies {{ $json.dork }}"
+            },
+            {
+              "name": "api_key",
+              "value": "8d5ddbfd1e8a5f7b650f83d6b6d100074f1e874fb1c36d091c7a21d28fbf2306"
+            },
+            {
+              "name": "num",
+              "value": "30"
+            },
+            {
+              "name": "hl",
+              "value": "fr"
+            },
+            {
+              "name": "gl",
+              "value": "fr"
+            },
+            {
+              "name": "tbs",
+              "value": "qdr:d"
+            },
+            {
+              "name": "Location",
+              "value": "France"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4694a4e8-8d1a-4691-9a3e-1151f679c750",
+      "name": "HTTP Request5",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -224,
+        880
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "organic_results",
+        "options": {}
+      },
+      "id": "d117e1fc-8bf9-4537-b84d-296192ce8539",
+      "name": "Split Out6",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        0,
+        112
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "=site:sainoo.com/ {{ $json.dork }}"
+            },
+            {
+              "name": "api_key",
+              "value": "8d5ddbfd1e8a5f7b650f83d6b6d100074f1e874fb1c36d091c7a21d28fbf2306"
+            },
+            {
+              "name": "num",
+              "value": "30"
+            },
+            {
+              "name": "hl",
+              "value": "fr"
+            },
+            {
+              "name": "gl",
+              "value": "fr"
+            },
+            {
+              "name": "Location",
+              "value": "France"
+            },
+            {
+              "name": "tbs",
+              "value": "qdr:d"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b81ded55-d6c6-44b2-9a9e-2b98cda59298",
+      "name": "HTTP Request6",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -224,
+        112
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "=site:fr.indeed.com/viewjob {{ $json.dork }}"
+            },
+            {
+              "name": "api_key",
+              "value": "8d5ddbfd1e8a5f7b650f83d6b6d100074f1e874fb1c36d091c7a21d28fbf2306"
+            },
+            {
+              "name": "num",
+              "value": "30"
+            },
+            {
+              "name": "hl",
+              "value": "fr"
+            },
+            {
+              "name": "gl",
+              "value": "fr"
+            },
+            {
+              "name": "tbs",
+              "value": "qdr:d"
+            },
+            {
+              "name": "Location",
+              "value": "France"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bfee6a9f-0b28-48ec-9560-18993776d6dc",
+      "name": "HTTP Request7",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -224,
+        304
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "organic_results",
+        "options": {}
+      },
+      "id": "7ca46b7f-e637-4820-ac00-b318eb76f287",
+      "name": "Split Out7",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        0,
+        304
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "=site:jobteaser.com/fr/job-offers {{ $json.dork }}"
+            },
+            {
+              "name": "api_key",
+              "value": "8d5ddbfd1e8a5f7b650f83d6b6d100074f1e874fb1c36d091c7a21d28fbf2306"
+            },
+            {
+              "name": "num",
+              "value": "30"
+            },
+            {
+              "name": "tbs",
+              "value": "qdr:d"
+            },
+            {
+              "name": "hl",
+              "value": "fr"
+            },
+            {
+              "name": "gl",
+              "value": "fr"
+            },
+            {
+              "name": "Location",
+              "value": "France"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "abd822a0-d8ff-4df8-a675-f66a87aba369",
+      "name": "HTTP Request8",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -224,
+        496
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "organic_results",
+        "options": {}
+      },
+      "id": "55046cb5-0999-4e64-8c4c-181b63654258",
+      "name": "Split Out8",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        0,
+        496
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "=site:fr.linkedin.com/jobs/view {{ $json.dork }}"
+            },
+            {
+              "name": "api_key",
+              "value": "8d5ddbfd1e8a5f7b650f83d6b6d100074f1e874fb1c36d091c7a21d28fbf2306"
+            },
+            {
+              "name": "num",
+              "value": "30"
+            },
+            {
+              "name": "tbs",
+              "value": "qdr:d"
+            },
+            {
+              "name": "hl",
+              "value": "fr"
+            },
+            {
+              "name": "gl",
+              "value": "fr"
+            },
+            {
+              "name": "Location",
+              "value": "France"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "0ee3af64-88a3-4f6b-90e6-8a2b03bc2f80",
+      "name": "HTTP Request9",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -224,
+        688
+      ],
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "organic_results",
+        "options": {}
+      },
+      "id": "a7c3210b-5b16-4a5a-996f-64399e22a642",
+      "name": "Split Out9",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        0,
+        688
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "numberInputs": 5
+      },
+      "id": "34d5ea48-188c-446b-878d-33cff30ba013",
+      "name": "Merge2",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        224,
+        448
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "link",
+              "field2": "link"
+            }
+          ]
+        },
+        "options": {
+          "skipFields": "title, position, row_number, snippet, redirect_link, favicon, displayed_link, date, source, snippet_highlighted_words"
+        }
+      },
+      "id": "69296dac-907d-473b-98db-a098e5241c64",
+      "name": "Compare Datasets1",
+      "type": "n8n-nodes-base.compareDatasets",
+      "position": [
+        448,
+        720
+      ],
+      "typeVersion": 2.3
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "1Ayl5KUiHmE241UfiGZ5CfeISXIoq6Ya4pkro89TT4d4",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ayl5KUiHmE241UfiGZ5CfeISXIoq6Ya4pkro89TT4d4/edit?usp=drivesdk",
+          "cachedResultName": "Offres emplois n8n"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gid=0",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ayl5KUiHmE241UfiGZ5CfeISXIoq6Ya4pkro89TT4d4/edit#gid=0",
+          "cachedResultName": "Base des offres"
+        },
+        "options": {}
+      },
+      "id": "3a5aa818-a8d2-4455-a2e2-fb3c1e31033a",
+      "name": "Get row(s) in sheet2",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        224,
+        1024
+      ],
+      "typeVersion": 4.7,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "kplIavU6Ix016UIY",
+          "name": "Google Sheets account Louis"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Voici l'offre : \nTitre : {{ $json.title }}\nDescription : {{ $json.snippet }}",
+        "options": {
+          "systemMessage": "=## Role et objectif : \nTu es en charges de déterminer si cette offre d'emploi correspond à un poste de prof de français pour langues étrangères (FLE)\n\n## Consigne : \n- si une offre correspond, alors écris simplement \"Oui\"\n- si une offre se réfère à tout autre poste (product, marketing, ingénieur, développeur etc), alors écris simplement \"Non\"\n\n## Contraintes et limitations\nNe répond que par oui ou par non. \nSi tu ne sais pas répond par oui par défaut. \nSi le champ est vide, répond par oui.\n"
+        }
+      },
+      "id": "ce447541-34e9-404b-bef7-9aa4fe18af77",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        896,
+        752
+      ],
+      "typeVersion": 2.2
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "id": "c2d23631-df8d-4279-950e-10fab5bb07f1",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "position": [
+        928,
+        912
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "TsGxZRireGn8g6QN",
+          "name": "Google Gemini(PaLM) Api account Louis"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "66462317-08bc-4e91-937c-bb634392d8a4",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "Oui"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Oui"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "e897beb2-2fa4-46e3-ae2e-3eb63f4df375",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": "Non"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Non"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "db25666d-b751-47a7-a279-e00ff8dcf8d5",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        1248,
+        752
+      ],
+      "typeVersion": 3.3
+    },
+    {
+      "parameters": {
+        "content": "## Job offers scrapping\nSet to Daily Activation\nWebsites to search : \n- linkedin\n- sainoo\n- welcometothejungle\n- indeed\n- job teaser\n",
+        "height": 240,
+        "width": 304
+      },
+      "id": "1d7e8f56-0a1c-468c-bb2f-8695faab7dbd",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1008,
+        432
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Google Dork\nHere we write our google dork to limit and precise the number of job offers to be returned\n\nCan use AI to help write the google dork",
+        "height": 304
+      },
+      "id": "ff7c1d63-32c8-4084-926c-79a63f97613d",
+      "name": "Sticky Note1",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -640,
+        384
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## SerpAPI\nWe use SerpAPI tool which enables us to retrieve structured information from a google web request\n\nSee: https://serpapi.com\n\n**Example:**\ncurl -X GET 'https://serpapi.com/search' \\\n  -G \\\n  --data-urlencode 'q=site:sainoo.com/ {{ $json.dork }}' \\\n  --data-urlencode 'api_key=' \\\n  --data-urlencode 'num=30' \\\n  --data-urlencode 'hl=fr' \\\n  --data-urlencode 'gl=fr' \\\n  --data-urlencode 'Location=France' \\\n  --data-urlencode 'tbs=qdr:d'",
+        "height": 592,
+        "width": 256
+      },
+      "id": "d3ca54a1-d8e7-453c-81ff-5c1c128c8e0c",
+      "name": "Sticky Note2",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -320,
+        -352
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Database\nWe read our database of job offers already added",
+        "height": 368,
+        "width": 192
+      },
+      "id": "db455cb2-571b-43af-b49f-109972e1d487",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        176,
+        880
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## AI Agent\nThis AI agent will confirm that each job offer matches our criteria output : yes/no",
+        "height": 480,
+        "width": 272
+      },
+      "id": "2845bad0-9b2a-434d-a14a-19d0bb5e749a",
+      "name": "Sticky Note4",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        880,
+        560
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Add the new job offers that match our criteria to the database and trigger next workflow",
+        "height": 480,
+        "width": 528
+      },
+      "id": "5e4ffe94-1b01-47f1-bc5c-f56b31cb973f",
+      "name": "Sticky Note5",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1440,
+        560
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "1Ayl5KUiHmE241UfiGZ5CfeISXIoq6Ya4pkro89TT4d4",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ayl5KUiHmE241UfiGZ5CfeISXIoq6Ya4pkro89TT4d4/edit?usp=drivesdk",
+          "cachedResultName": "Offres emplois n8n"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gid=0",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ayl5KUiHmE241UfiGZ5CfeISXIoq6Ya4pkro89TT4d4/edit#gid=0",
+          "cachedResultName": "Base des offres"
+        },
+        "columns": {
+          "value": {
+            "link": "={{ $json.link }}",
+            "Com mail": "Envoyé"
+          },
+          "schema": [
+            {
+              "id": "Date ajout",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "Date ajout",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "title",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "title",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "snippet",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "snippet",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "link",
+              "type": "string",
+              "display": true,
+              "removed": false,
+              "required": false,
+              "displayName": "link",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "date",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "snippet_highlighted_words",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "snippet_highlighted_words",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "source",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "source",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Com mail",
+              "type": "string",
+              "display": true,
+              "required": false,
+              "displayName": "Com mail",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Postuler",
+              "type": "string",
+              "display": true,
+              "removed": true,
+              "required": false,
+              "displayName": "Postuler",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "type": "number",
+              "display": true,
+              "removed": true,
+              "readOnly": true,
+              "required": false,
+              "displayName": "row_number",
+              "defaultMatch": false,
+              "canBeUsedToMatch": true
+            }
+          ],
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "link"
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "fcfa2368-9d40-4a38-a07d-56c5f94b64a3",
+      "name": "Update row in sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        -304,
+        1456
+      ],
+      "typeVersion": 4.7,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "kplIavU6Ix016UIY",
+          "name": "Google Sheets account Louis"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "aaf44e9a-76a8-4cba-bd3f-30d5e70d8377",
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -912,
+        1232
+      ],
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "toRecipients": "cashflows.routine@gmail.com",
+        "subject": "Les offres de stages du jour 🦈",
+        "bodyContent": "=📌 Voici les offres de stages du jour : \n{{ $json.link.join('\\n\\n') }}",
+        "additionalFields": {}
+      },
+      "id": "1128f204-8ae9-490c-9a10-e6e4c00261ff",
+      "name": "Send a message1",
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "position": [
+        -80,
+        1232
+      ],
+      "webhookId": "270c33b5-76bc-48d4-a886-6060e00b025b",
+      "typeVersion": 2,
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "VXNsvvPTaEUolGT4",
+          "name": "Microsoft Outlook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "link"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9ced530b-676c-4089-a750-5a48838d34b0",
+      "name": "Aggregate",
+      "type": "n8n-nodes-base.aggregate",
+      "position": [
+        -304,
+        1232
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "1Ayl5KUiHmE241UfiGZ5CfeISXIoq6Ya4pkro89TT4d4",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ayl5KUiHmE241UfiGZ5CfeISXIoq6Ya4pkro89TT4d4/edit?usp=drivesdk",
+          "cachedResultName": "Offres emplois n8n"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gid=0",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Ayl5KUiHmE241UfiGZ5CfeISXIoq6Ya4pkro89TT4d4/edit#gid=0",
+          "cachedResultName": "Base des offres"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Com mail",
+              "lookupValue": "Non envoyé"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "640dde5a-e345-4f47-9d32-6f40fdf019ef",
+      "name": "Get row(s) in sheet3",
+      "type": "n8n-nodes-base.googleSheets",
+      "position": [
+        -528,
+        1232
+      ],
+      "executeOnce": true,
+      "typeVersion": 4.7,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "kplIavU6Ix016UIY",
+          "name": "Google Sheets account Louis"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Executes when the previous is over",
+        "height": 240,
+        "width": 304
+      },
+      "id": "edebab95-439e-45dd-b4f5-91cd9be4d852",
+      "name": "Sticky Note6",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1056,
+        1120
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Compare\nThe newly found jobs offer to the ones already present \n-> we keep only the new ones to avoid duplicates in the database",
+        "height": 368,
+        "width": 192
+      },
+      "id": "95f26ebf-e7e9-4b8f-ad0b-fa120492f304",
+      "name": "Sticky Note7",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        400,
+        576
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Split out the items found with the web request for further processing\n",
+        "height": 304,
+        "width": 256
+      },
+      "id": "88b1b801-5836-4fff-a1f7-3abce3afc8f1",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -48,
+        -64
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Merge all the job offers that have been found",
+        "height": 368
+      },
+      "id": "7de72367-15cc-4724-9e61-c1efffcf1cc6",
+      "name": "Sticky Note9",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        176,
+        304
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Switch path based on the output (continue with the relevant job offers only)",
+        "height": 480
+      },
+      "id": "bb07161a-d146-4ae5-85eb-59f88244bb79",
+      "name": "Sticky Note10",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1168,
+        560
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Gets the newly added - not sent - jobs only\n",
+        "height": 240,
+        "width": 368
+      },
+      "id": "43cde433-f7ee-4c41-bc0e-de283db09d37",
+      "name": "Sticky Note11",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -720,
+        1120
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Aggregates them into 1 list item",
+        "height": 240,
+        "width": 192
+      },
+      "id": "2d2f8af4-40af-4f84-b496-6ced06afa90b",
+      "name": "Sticky Note12",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -336,
+        1120
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Send the list of new job offers by email\n(possible to update mean of notification)",
+        "height": 256,
+        "width": 272
+      },
+      "id": "595bec32-c7fe-4da1-8582-0bd386d1e767",
+      "name": "Sticky Note13",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -128,
+        1104
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "content": "## Add \"sent\" to the database so that they don't get sent by email multiple times",
+        "height": 240,
+        "width": 432
+      },
+      "id": "2e3a338c-40dd-430d-bd69-652c41167b04",
+      "name": "Sticky Note14",
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -432,
+        1376
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "GHwR5BJSkXBOSD6J",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/GHwR5BJSkXBOSD6J",
+          "cachedResultName": "Offres de stages 🛜"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "id": "30d74936-07a6-4459-b71d-c1bdd1d15706",
+      "name": "Call 'Offres de stages 🛜'",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "position": [
+        1696,
+        752
+      ],
+      "executeOnce": true,
+      "typeVersion": 1.2
+    }
+  ],
+  "pinData": {
+    "Schedule Trigger": [
+      {
+        "json": {
+          "timestamp": "2025-11-05T07:00:54.018+01:00",
+          "Readable date": "November 5th 2025, 7:00:54 am",
+          "Readable time": "7:00:54 am",
+          "Day of week": "Wednesday",
+          "Year": "2025",
+          "Month": "November",
+          "Day of month": "05",
+          "Hour": "07",
+          "Minute": "00",
+          "Second": "54",
+          "Timezone": "Europe/Paris (UTC+01:00)"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Compare Datasets1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out5": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Split Out6": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out7": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Split Out8": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Split Out9": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request6",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request7",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request8",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request9",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get row(s) in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request5": {
+      "main": [
+        [
+          {
+            "node": "Split Out5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request6": {
+      "main": [
+        [
+          {
+            "node": "Split Out6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request7": {
+      "main": [
+        [
+          {
+            "node": "Split Out7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request8": {
+      "main": [
+        [
+          {
+            "node": "Split Out8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request9": {
+      "main": [
+        [
+          {
+            "node": "Split Out9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compare Datasets1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet2": {
+      "main": [
+        [
+          {
+            "node": "Compare Datasets1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet3": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Call 'Offres de stages 🛜'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timezone": "Europe/Paris",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "78eTGPFUiST8fDqn"
+  },
+  "versionId": "e4b268d2-8162-4bf9-b24d-34dfcad75088",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dca66bfe20538326afcf0ea9818c4e437640a050446b589da002699d11b2eea7"
+  },
+  "nodeGroups": [],
+  "id": "GHwR5BJSkXBOSD6J",
+  "tags": []
+}
